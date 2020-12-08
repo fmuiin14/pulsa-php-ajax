@@ -27,7 +27,7 @@ $data = $result->fetch_assoc();
 echo number_format($data['jumlah']);
 
 // tutup statement
-$stmt = close();
+$stmt->close();
 
 // tutup koneksi
 $mysqli->close();

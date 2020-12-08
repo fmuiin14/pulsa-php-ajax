@@ -118,12 +118,10 @@
                 } else if (menu == "penjualan") {
                     // jika id penjualan = view penjualan
                     $('.content').load('modules/penjualan/view.php');
-                } else if {
-                    menu == "laporan"
-                } {
+                } else if (menu == "laporan") {
+                } 
                     // jika id laporan = view laporan
                     $('.content').load('modules/penjualan/view.php');
-                }
             });
         });
 
@@ -154,12 +152,12 @@
             if (key == null || key == 0 || key == 8 || key == 9 || key == 27)
                 return true;
 
-            if(key == 13) {
+            if (key == 13) {
                 var i;
-                for(i=0; i<field.form.elements.length; i++)
-                if(field == field.form.elements[i])
-                break;
-                i = (i+1) % field.form.elements.length;
+                for (i = 0; i < field.form.elements.length; i++)
+                    if (field == field.form.elements[i])
+                        break;
+                i = (i + 1) % field.form.elements.length;
                 field.form.elements[i].focus();
                 return false;
             };

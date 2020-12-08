@@ -5,7 +5,7 @@ if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'
     require_once "../../config/config.php";
 
     // sql statement untuk menampilkan jumlah data dari tabel pelanggan
-    $query = "SELECT count(id_pelanggan) as jumlah FROM tbl_pelanggan";
+    $query = "SELECT count(id_penjualan) as jumlah FROM tbl_penjualan";
 
     // membuat prepared statements
     $stmt = $mysqli->prepare($query);
