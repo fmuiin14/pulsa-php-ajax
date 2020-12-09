@@ -80,8 +80,98 @@
 
         // datatables server side processing
         var table = $('#tabel-pelanggan').DataTable({
-            
-        })
+            "scrollY": '45vh', //vertikal scroll pada table
+            "scrollCollapse": true,
+            "processing": true, //tampilkan loading pada saat proses data
+            "serverSide": true,
+            "ajax": 'modules/pelanggan/data.php', //panggil file data.php untuk menampilkan data pelanggan dari database
+            // menampilkan data
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "data": null,
+                    "orderable": false,
+                    "searchable": false,
+                    "width": '30px',
+                    "className": 'center'
+                },
+                {
+                    "targets": 1,
+                    "visible": false
+                },
+                {
+                    "targets": 2,
+                    "width": '180px'
+                },
+                {
+                    "targets": 3,
+                    "width": '100px',
+                    "className": 'center'
+                },
+                {
+                    "targets": 4,
+                    "data": null,
+                    "orderable": false,
+                    "searchable": false,
+                    "width": '70px',
+                    "className": 'center',
+                    // tombol ubah dan hapus
+                    "render": function(data, type, row) {
+                        var btn = "<a style="\margin-right:7px\" title=\"Ubah\" class=\"btn btn-info btn-sm getUbah\" href=\"javascript:void(0);\"><i class=\"fas fa-edit\"></i></a><a title=\"Hapus\" class=\"btn btn-danger btn-sm btnHapus\" href=\"javascript:void(0);\"><i class=\"fas fa-trash\"></i></a>";
+                        return btn;
+                    }
+                }
+            ],
+            "order": [[1, "desc"]], //urutkan data berdasarkan id_pelanggan secara desc
+            "iDisplayLength": 10, //tampilkan 10 data per halaman
+            // membuat nomor urut table
+            "rowCallback": function(row, data, iDisplayIndex) {
+                var info = this.fnPagingInfo();
+                var page = info.iPage;
+                var length = info.iLength;
+                var index = page*length+(iDisplayIndex+1);
+                $('td:eq(0)', row).html(index);
+            }
 
+        });
+
+
+        // form
+        // tampilkan modal form entry data
+        $('#btnTambah').click(function() {
+            // reset form
+            $('#formPelanggan')[0].reset();
+            // judul form
+            $('#modalLabel').text('Entri Data Pelanggan');
+        });
+
+        // tampilkan modal form ubah data
+        $('#tabel-pelanggan tbody').on('click', '.getUbah', function() {
+            // judul form
+            $('#modalLabel').text('Ubah Data Pelanggan');
+
+            var data = table.row($(this).parents('tr')).data();
+            // membuat variabel untuk menampung data id_pelanggan
+            var id_pelanggan = data[1];
+
+            $.ajax({
+                type: "GET", //kirim data method get
+                url: "modules/pelanggan/get_data.php", //proses get data pelanggan berdasarkan id_pelanggan
+                data: {
+                    id_pelanggan: id_pelanggan //data yg dikirim
+                },
+                dataType: "JSON", //tipe data json
+                success: function(result) { //ketika sukses get data
+                    // tampilkan modal ubah data pelanggan
+                    $('#modalPelanggan').modal('show');
+                    // tampilkan data pelanggan
+                    $('#id_pelanggan').val(result.id_pelanggan);
+                    $('#nama').val(result.nama);
+                    $('#no_hp').val(result.no_hp);
+                }
+            });
+        });
+
+        // insert dan update
     });
 </script>
