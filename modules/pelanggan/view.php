@@ -64,7 +64,7 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         //view
         //datatables plugins untuk membuat nomor urut tabel
         $.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
@@ -86,8 +86,7 @@
             "serverSide": true,
             "ajax": 'modules/pelanggan/data.php', //panggil file data.php untuk menampilkan data pelanggan dari database
             // menampilkan data
-            "columnDefs": [
-                {
+            "columnDefs": [{
                     "targets": 0,
                     "data": null,
                     "orderable": false,
@@ -116,20 +115,22 @@
                     "width": '70px',
                     "className": 'center',
                     // tombol ubah dan hapus
-                    "render": function(data, type, row) {
-                        var btn = "<a style="\margin-right:7px\" title=\"Ubah\" class=\"btn btn-info btn-sm getUbah\" href=\"javascript:void(0);\"><i class=\"fas fa-edit\"></i></a><a title=\"Hapus\" class=\"btn btn-danger btn-sm btnHapus\" href=\"javascript:void(0);\"><i class=\"fas fa-trash\"></i></a>";
+                    "render": function (data, type, row) {
+                        var btn = "<a style=\"margin-right:7px\" title=\"Ubah\" class=\"btn btn-info btn-sm getUbah\" href=\"javascript:void(0);\"><i class=\"fas fa-edit\"></i></a><a title=\"Hapus\" class=\"btn btn-danger btn-sm btnHapus\" href=\"javascript:void(0);\"><i class=\"fas fa-trash\"></i></a>";
                         return btn;
                     }
                 }
             ],
-            "order": [[1, "desc"]], //urutkan data berdasarkan id_pelanggan secara desc
+            "order": [
+                [1, "desc"]
+            ], //urutkan data berdasarkan id_pelanggan secara desc
             "iDisplayLength": 10, //tampilkan 10 data per halaman
             // membuat nomor urut table
-            "rowCallback": function(row, data, iDisplayIndex) {
+            "rowCallback": function (row, data, iDisplayIndex) {
                 var info = this.fnPagingInfo();
                 var page = info.iPage;
                 var length = info.iLength;
-                var index = page*length+(iDisplayIndex+1);
+                var index = page * length + (iDisplayIndex + 1);
                 $('td:eq(0)', row).html(index);
             }
 
@@ -138,7 +139,7 @@
 
         // form
         // tampilkan modal form entry data
-        $('#btnTambah').click(function() {
+        $('#btnTambah').click(function () {
             // reset form
             $('#formPelanggan')[0].reset();
             // judul form
@@ -146,7 +147,7 @@
         });
 
         // tampilkan modal form ubah data
-        $('#tabel-pelanggan tbody').on('click', '.getUbah', function() {
+        $('#tabel-pelanggan tbody').on('click', '.getUbah', function () {
             // judul form
             $('#modalLabel').text('Ubah Data Pelanggan');
 
@@ -161,7 +162,7 @@
                     id_pelanggan: id_pelanggan //data yg dikirim
                 },
                 dataType: "JSON", //tipe data json
-                success: function(result) { //ketika sukses get data
+                success: function (result) { //ketika sukses get data
                     // tampilkan modal ubah data pelanggan
                     $('#modalPelanggan').modal('show');
                     // tampilkan data pelanggan
@@ -173,5 +174,125 @@
         });
 
         // insert dan update
+        // proses simpan data
+        $('#btnSimpan').click(function () {
+            // validasi form input
+            // jika nama pelanggan kosong
+            if ($('#nama').val() == "") {
+                // focus ke input nama pelanggan
+                $("#nama").focus();
+                // tampilkan peringatan data tidak boleh kosong
+                swal("Peringatan!", "Nama Pelanggan tidak boleh kosong.", "warning");
+            }
+
+            // jika no hp kosong
+            if ($('#no_hp').val() == "") {
+                // focus ke input nama pelanggan
+                $("#no_hp").focus();
+                // tampilkan peringatan data tidak boleh kosong
+                swal("Peringatan!", "No HP Pelanggan tidak boleh kosong.", "warning");
+            } else {
+                // jika form entri data pelanggan yang ditampilkan, jalanakn perintah insert
+                if($('#modelLabel').text() == "Entri Data Pelanggan") {
+                    var data = $('#formPelanggan').serialize();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "modules/pelanggan/insert.php",
+                        data: data,
+                        success: function(result) {
+                            if(result === "sukses") {
+                                // reset form
+                                $('#formPelanggan')[0].reset();
+                                // tutup modal entri data pelanggan
+                                $('#modalPelanggan').modal('hide');
+                                // tampilkan pesan sukses simpan data
+                                swal("Sukses!", "Data Pelanggan berhasil di simpan.", "success");
+                                // tampilkan data pelanggan
+                                var table = $('#tabel-pelanggan').DataTable();
+                                table.ajax.reload(null, false);
+                            } else {
+                                // tampilkan pesan gagal simpan data
+                                swal("Gagal!", "Data Pelanggan gagal disimpan.", "Error");
+                            }
+                        }
+                    });
+                    return false;
+                }
+
+                // jika form ubah data pelanggan yang ditampilkan, jalankan perintah update
+                else if ($('#modalLabel').text() == "Ubah Data Pelanggan") {
+                    // variabel untuk menampung data dari form ubah data
+                    var data = $('#formPelanggan').serialize();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "modules/pelanggan/update.php",
+                        data: data,
+                        success: function(result) {
+                            if(result === "sukses") {
+                                // reset form
+                                $('#formPelanggan')[0].reset();
+
+                                // tutup modal
+                                $('#modalPelanggan').modal('hide');
+
+                                // tampilkan pesan sukses ubah data
+                                swal("Sukses!", "Data Pelanggan berhasil diubah.", "success");
+
+                                // tampilkan data pelanggan
+                                var table = $('#tabel-pelanggan').DataTable();
+                                table.ajax.reload(null, false);
+                            } else {
+                                swal("Gagal!", "Data Pelanggan tidak bisa di ubah", "error");
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+        });
+
+        // delete
+        $('#tabel-pelanggan tbody').on('click', '.btnHapus', function () {
+            var data = table.row($(this).parents('tr')).data();
+            // tampilkan notifikasi saat akan menghapus data
+            swal({
+                title: "Apakah anda yakin?",
+                text: "Anda akan menghapus data pelanggan : " + data[2] + "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Ya, Hapus!",
+                closeOnConfirm: false
+            },
+            // jika pilih ya, maka hapus data
+            function() {
+                // variabel untuk menampung data id_pelanggan
+                var id_pelanggan = data[1];
+
+                $.ajax({
+                    type: "POST",
+                    url: "modules/pelanggan/delete.php",
+                    data: {
+                        id_pelanggan: id_pelanggan
+                    },
+                    success: function(result) {
+                        if(result === "sukses") {
+                            // pesan sukses hapus data
+                            swal("Sukses!", "Data Pelanggan berhasil di hapus", "success");
+
+                            // data pelanggan
+                            var table = $('#tabel-pelanggan').DataTable();
+                            table.ajax.reload(null, false);
+                        } else {
+                            // pesan gagal hapus data
+                            swal("Gagal!", "Data Pelanggan tidak bisa di hapus", "error");
+                        }
+                    }
+                });
+            });
+        });
+
     });
 </script>
