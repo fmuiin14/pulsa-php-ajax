@@ -19,7 +19,7 @@ if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'
 );
 
 // memanggil file database.php untuk informasi koneksi ke server sql
-require_once ".../../confid/database.php";
+require_once ".../../config/database.php";
 
 // memanggil file ssp.class.php untuk menjalankan datatables server side processing
 require '../../config/ssp.class.php';

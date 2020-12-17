@@ -44,12 +44,18 @@
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <!-- menu aplikasi -->
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
                         <a href="javascript:void(0);" class="nav-link mr-1 menu" id="beranda">
-                            <i class="fas fa-user title-icon"></i> Pelanggan
+                            <i class="fas fa-user title-icon"></i> Beranda
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:void(0);" class="nav-link mr-1 menu" id="pelanggan">
+                            <i class="fas fa-tablet-alt title-icon"></i> Pelanggan
                         </a>
                     </li>
                     <li class="nav-item">
@@ -119,9 +125,9 @@
                     // jika id penjualan = view penjualan
                     $('.content').load('modules/penjualan/view.php');
                 } else if (menu == "laporan") {
-                } 
                     // jika id laporan = view laporan
-                    $('.content').load('modules/penjualan/view.php');
+                    $('.content').load('modules/laporan/view.php');
+                }
             });
         });
 

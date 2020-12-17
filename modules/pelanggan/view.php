@@ -74,7 +74,8 @@
                 "iLength": oSettings._iDisplayLength,
                 "iTotal": oSettings.fnRecordsTotal(),
                 "iFilterTotal": oSettings.fnRecordsDisplay(),
-                "iPage": Math.cell(oSettings._iDisplayStart / oSettings._iDisplayLength)
+                "iPage": Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
+                "iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings.iDisplayLength)
             };
         };
 
